@@ -17,9 +17,10 @@ The second question on the other hand, is a tad more complicated. At the onset I
 
 It is with these two questions that I began my development, as well as my quest to receive as many _Letterboxd_ user logs as possible. Due to the limits of my reach, the recommendations could never get as accurate they would with access to all of _Letterboxd's_ data, but what I scraped together works as a proof of concept.
 
-The entire front-end is designed in **HTML** with plenty of **JavaScript** to handle the animations and interaction with the back-end. The back-end is written in **Python**, and integrates directly with the database I designed in **PostgreSQL**. I have supplied full access to the front-end, and snippets of the back-end, with the database schema also available for view. Below I will outline the use of the website, as well as any specific information worth noting along the way.
+The entire front-end is designed in **HTML** with plenty of **JavaScript** to handle the animations and interaction with the back-end. The back-end is written in **Python**, and integrates directly with the database I designed in **PostgreSQL**. I have supplied full access to the front-end, and snippets of the back-end, with the database schema also available for view.
 
 # Use/Implementation
+Below I will outline the use of the website and all of its features, as well as any specific information worth noting along the way.
 
 ## Movie Selection and Search
 The website is simple in its use. It opens with a search bar in the center, prompting you to select up to four movies that you like. 
@@ -37,13 +38,21 @@ With four films selected:
 
 From this point, all you need to do is click the search button on the right side of the search bar to receieve your recommendations!
 
-<p align="center"><img width="700" height="1180" alt="Screenshot 2026-04-21 213022" src="https://github.com/user-attachments/assets/cf57d08c-c3ec-480f-9847-90c78aadf61c" /></p>
+<p align="center"><img width="700" alt="Screenshot 2026-04-21 213022" src="https://github.com/user-attachments/assets/cf57d08c-c3ec-480f-9847-90c78aadf61c" /></p>
 
 ## Recommendation Filtering
+The initial list of results is purely based on other user's general taste, rather than being restricted to recommendations purely based on specific attributes of the selected films, such as genre. This is to encourage a broader exploration of film, and in turn, a broadening of taste. If you are looking for something a little more specific though, _cine-rec_ has built in filtration options to bring you closer to your desired watch. These include toggle-boxes for genre (which can be mix and matched for further specification, such as a Horror/Comedy), text boxes to specify an actor or director you are looking for, and dropdowns for the decade of release and maximum length (90min, 120min, 150min, 180min). If you are logged into your account, you will also have an option to exclude movied you have already seen, allowing you to receive fresh options.
 
-<img width="1122" height="269" alt="Screenshot 2026-04-21 213211" src="https://github.com/user-attachments/assets/7cab31cc-10f1-402b-b97a-b327ae32b695" />
-<img width="403" height="103" alt="Screenshot 2026-04-21 213154" src="https://github.com/user-attachments/assets/26be8bec-5d7c-4e9f-86d9-a3a1dd1607e7" />
-<img width="446" height="325" alt="Screenshot 2026-04-21 213120" src="https://github.com/user-attachments/assets/164674b2-5d4e-4a02-bf19-770efd927db3" />
-<img width="461" height="276" alt="Screenshot 2026-04-21 213052" src="https://github.com/user-attachments/assets/d1cce0b1-d7d5-4cd5-9a8a-19f0ea8d7456" />
+<p align="center"><img width="700" alt="Screenshot 2026-04-21 213211" src="https://github.com/user-attachments/assets/7cab31cc-10f1-402b-b97a-b327ae32b695" /></p>
+
+## Account Creation/Logging in
+If logged out, the top right of the page you will see a toggle-switch to Log-in, or Create an Account.
+
+<p align="center"><img width="400" alt="Screenshot 2026-04-21 213154" src="https://github.com/user-attachments/assets/26be8bec-5d7c-4e9f-86d9-a3a1dd1607e7" />
+<img width="400" alt="Screenshot 2026-04-21 213120" src="https://github.com/user-attachments/assets/164674b2-5d4e-4a02-bf19-770efd927db3" /></p>
+
+After creating an account or logging in, the top right of your screen will update to reflect this new status, It will also allow you to submit your _Letterboxd_ ratings.csv file to import the films you have already watched. This will enhance the recommendations for other users, and is currently how all data intake is done, and will also allow the user to filter out already seen films as previously mentioned.
+
+<p align="center"><img width="600" alt="Screenshot 2026-04-21 213052" src="https://github.com/user-attachments/assets/d1cce0b1-d7d5-4cd5-9a8a-19f0ea8d7456" /></p>
 
 
