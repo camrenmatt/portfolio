@@ -47,11 +47,11 @@ The initial list of results is purely based on other user's general taste, rathe
 
 ## Account Creation/Logging in
 If logged out, the top right of the page you will see a toggle-switch to Log-in, or Create an Account.
-<p align="center"><img width="250" alt="Screenshot 2026-04-21 213052" src="https://github.com/user-attachments/assets/d1cce0b1-d7d5-4cd5-9a8a-19f0ea8d7456" /></p>
+<p align="center"><img width="250" alt="Screenshot 2026-04-21 213052" src="https://github.com/user-attachments/assets/d1cce0b1-d7d5-4cd5-9a8a-19f0ea8d7456" />
 <img width="250" alt="Screenshot 2026-04-21 213120" src="https://github.com/user-attachments/assets/164674b2-5d4e-4a02-bf19-770efd927db3" /></p>
 
 After creating an account or logging in, the top right of your screen will update to reflect this new status, It will also allow you to submit your _Letterboxd_ ratings.csv file to import the films you have already watched. This will enhance the recommendations for other users, and is currently how all data intake is done, and will also allow the user to filter out already seen films as previously mentioned.
 
-<p align="center"><img width="600" alt="Screenshot 2026-04-21 213154" src="https://github.com/user-attachments/assets/26be8bec-5d7c-4e9f-86d9-a3a1dd1607e7" />
+<p align="center"><img width="600" alt="Screenshot 2026-04-21 213154" src="https://github.com/user-attachments/assets/26be8bec-5d7c-4e9f-86d9-a3a1dd1607e7" /></p>
 
 
