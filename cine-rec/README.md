@@ -21,11 +21,14 @@ The entire front-end is designed in **HTML** with plenty of **JavaScript** to ha
 
 # Use/Implementation
 The website is simple in its use. It opens with a search bar in the center, prompting you to select up to four movies that you like. 
-<img width="700" alt="Screenshot 2026-04-21 212827" src="https://github.com/user-attachments/assets/6b94e626-1912-49d5-9077-757b9b2e65de" />
+
+<p align="center"><img width="700" alt="Screenshot 2026-04-21 212827" src="https://github.com/user-attachments/assets/6b94e626-1912-49d5-9077-757b9b2e65de" /></p>
 
 Upon clicking on the bar, four empty poster slots will appear, to be filled by your selections. Just type in a film you love and select it to add it to your search.
-<img width="500" alt="image" src="https://github.com/user-attachments/assets/daa181c9-db49-4424-8b5c-2ee2ea22cb84" />
-<img width="500" alt="Screenshot 2026-04-21 212920" src="https://github.com/user-attachments/assets/b5ef7762-b890-4cea-90cc-8728475b4019" />
+
+<p align="center"><img width="500" alt="image" src="https://github.com/user-attachments/assets/daa181c9-db49-4424-8b5c-2ee2ea22cb84" />
+<img width="500" alt="Screenshot 2026-04-21 212920" src="https://github.com/user-attachments/assets/b5ef7762-b890-4cea-90cc-8728475b4019" /></p>
+
 With four films selected: <img width="500" alt="image" src="https://github.com/user-attachments/assets/cea9ae64-e426-4ed6-b733-376f00a17843" />
 
 
