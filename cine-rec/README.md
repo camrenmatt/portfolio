@@ -20,6 +20,8 @@ It is with these two questions that I began my development, as well as my quest 
 The entire front-end is designed in **HTML** with plenty of **JavaScript** to handle the animations and interaction with the back-end. The back-end is written in **Python**, and integrates directly with the database I designed in **PostgreSQL**. I have supplied full access to the front-end, and snippets of the back-end, with the database schema also available for view. Below I will outline the use of the website, as well as any specific information worth noting along the way.
 
 # Use/Implementation
+
+## Movie Selection and Search
 The website is simple in its use. It opens with a search bar in the center, prompting you to select up to four movies that you like. 
 
 <p align="center"><img width="700" alt="Screenshot 2026-04-21 212827" src="https://github.com/user-attachments/assets/6b94e626-1912-49d5-9077-757b9b2e65de" /></p>
@@ -33,10 +35,15 @@ With four films selected:
 
 <p align="center"><img width="500" alt="image" src="https://github.com/user-attachments/assets/cea9ae64-e426-4ed6-b733-376f00a17843" /></p>
 
+From this point, all you need to do is click the search button on the right side of the search bar to receieve your recommendations!
+
+<p align="center"><img width="700" height="1180" alt="Screenshot 2026-04-21 213022" src="https://github.com/user-attachments/assets/cf57d08c-c3ec-480f-9847-90c78aadf61c" /></p>
+
+## Recommendation Filtering
 
 <img width="1122" height="269" alt="Screenshot 2026-04-21 213211" src="https://github.com/user-attachments/assets/7cab31cc-10f1-402b-b97a-b327ae32b695" />
 <img width="403" height="103" alt="Screenshot 2026-04-21 213154" src="https://github.com/user-attachments/assets/26be8bec-5d7c-4e9f-86d9-a3a1dd1607e7" />
 <img width="446" height="325" alt="Screenshot 2026-04-21 213120" src="https://github.com/user-attachments/assets/164674b2-5d4e-4a02-bf19-770efd927db3" />
 <img width="461" height="276" alt="Screenshot 2026-04-21 213052" src="https://github.com/user-attachments/assets/d1cce0b1-d7d5-4cd5-9a8a-19f0ea8d7456" />
-<img width="1122" height="1180" alt="Screenshot 2026-04-21 213022" src="https://github.com/user-attachments/assets/cf57d08c-c3ec-480f-9847-90c78aadf61c" />
+
 
