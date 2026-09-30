@@ -1,0 +1,1157 @@
+<!DOCTYPE html>
+<head>
+    <title>cine-rec</title>
+    <style>
+        
+
+        body, button { /*set font and prevent site from creating horizontal scroll*/
+            margin: 0;
+            padding: 0;
+            font-family: "Segoe UI";
+            overflow-x: hidden;
+        }
+        button { cursor: pointer; }
+
+        .topstuff{
+            position:relative;
+        }
+
+        .login{ /*box for all login elements*/
+            position: absolute;
+            top: 0;
+            right: 0;
+            margin: 10px;
+            width: 275px;
+            z-index: 9999;
+        }
+
+        .authToggle { /*box for toggle between login and create account*/
+            display: flex;
+            justify-content: center;
+        }
+
+        .authToggle button.active { /*selected button in toggle*/
+            background: #ea3323;
+            color: white;
+            border-color: #ea3323;
+        }
+
+        .authToggle button.right { /*selected button in toggle*/
+            border-radius: 0px 5px 5px 0px;
+        }
+
+        .authToggle button.left { /*selected button in toggle*/
+            border-radius: 5px 0px 0px 5px;
+        }
+
+        .loggedOutWrapper{ /*wrapper for login and create account inputs*/
+            display:flex;
+            flex-direction: column;
+        }
+
+        .loginElement{ /*styling for login elements*/
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-family: "Segoe UI";
+            font-size: 16px;
+            margin-top: 6px;
+            padding:6px 12px;
+            display: block;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .loggedInElement{ /*styling for elements when logged in*/
+            border-radius: 5px;
+            font-family: "Segoe UI";
+            font-size: 16px;
+            margin-top: 6px;
+            padding:0px 6px;
+        }
+
+        button.loggedInElement{ /*styling for elements when logged in*/
+            border: 0px;
+            text-decoration: underline;
+            background: none;
+        }
+
+        .searchArea { /*container for all*/
+            min-height: 40vh;
+            width: 100vw;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            position: relative;
+            transition: transform 0.4s ease;
+            transform: translateY(-50px);
+        }
+        .searchArea.shifted { transform: translateY(20px); } /*shift searchArea down to make room for movie posters*/
+
+        .centerLogo { /*self explanatory*/
+            position: relative;
+            top: 200px;
+            width: 90%;
+            max-width: 500px;
+            opacity: 1;
+            transition: opacity 0.3s ease;
+        }
+        .centerLogo.hidden { opacity: 0; pointer-events: none; }
+
+        .search_wrapper { /*container for posters and container for search bar and suggestions*/
+            width: 75%;
+            max-width: 700px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        .searchBox { /*container for search bar and suggestions*/
+            display: flex;
+            width: 100%;
+            max-width: 700px;
+            position: relative;
+            z-index: 20;
+        }
+        .searchBox input { /*search bar input styling*/
+            flex: 1;
+            padding: 9.625px 15px;
+            border: 1px solid #ccc;
+            border-right: none;
+            border-radius: 25px 0 0 25px;
+            font-family: "Segoe UI";
+            font-size: 16px;
+            outline: none;
+            height: 25px;
+        }
+        .searchBox button { /*search button input styling*/
+            padding: 8px 15px 8px 10px;
+            border: 1px solid #ccc;
+            border-left: 0;
+            background: #ea3323;
+            border-radius: 0 25px 25px 0;
+            height: 100%;
+        }
+
+        .searchSymbol{
+            height:25px;
+            filter: invert(100%);
+        }
+
+        .searchBox.empty input {
+            border-radius: 25px; /* fully rounded */
+            border-right: 1px solid #ccc; /* restore right border */
+        }
+
+        .searchBox.empty button {
+            display: none; /* hide the search button */
+        }
+        .searchBox button:hover { background: #ddd; } /*highlight search button when hovering*/
+
+        .searchBox.suggestionsOpen input { border-radius: 25px 0 0 0; } /*to unround the bottom corners when the suggestions appear*/
+        .searchBox.empty.suggestionsOpen input { border-radius: 25px 25px 0 0; }
+        .searchBox.suggestionsOpen button { border-radius: 0 25px 0 0; }
+
+        .posters { /*container for the row of posters*/
+            width: 90%;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            opacity: 0;
+            transform: translateY(20px) scale(0.9);
+            pointer-events: none;
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+        .posters.show { /*make poster spaces appear when search bar is selected*/
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        .poster { /*styling for each poster*/
+            flex: 1;
+            aspect-ratio: 2 / 3;
+            background: #cdcdcd;
+            border: 1px solid #a6a6a6;
+            border-radius: 6px;
+            margin: 0 5px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+
+        .closeButton { /*close button in top right of posters of selected movies */
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            background: rgba(0,0,0,0.6);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 14px;
+            display: none;
+            place-items: center;
+            cursor: pointer;
+        }
+        .poster.filled .closeButton { /*reveal button*/
+            display: block;
+        }
+
+
+        .suggestions { /*suggestions container*/
+            width: 100%;
+            max-width: 700px;
+            background: white;
+            border: 1px solid #ccc;
+            border-top: none;
+            border-radius: 0 0 10px 10px;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            z-index: 10;
+            max-height: 260px;
+            overflow-y: auto;
+        }
+        .suggestions.hidden { display: none; } /*hide suggestions*/
+
+        .suggestions li { /*each suggestion*/
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .suggestions li:hover { background: #f5f5f5; }
+
+        /*suggestion styling for poster and info*/
+        .posterThumb { width: 50px; border-radius: 4px; flex-shrink: 0; }
+        .infoLeft { display: flex; flex-direction: column; flex: 1; }
+        .infoRight { display: flex; flex-direction: column; text-align: right; min-width: 140px; }
+        .infoLeft span, .infoRight span { font-size: 12px; color: #555; }
+        .title { font-size: 14px; color: black; }
+
+
+        .recommendations { /*container for recommendations*/
+            padding-top: 10px;
+            width: 40vw;
+            opacity: 0;
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+
+        /*ui changes after results are retrieved*/
+        .searchArea.results-mode {transform: translateY(-150px);}
+        .results-mode .searchBox,
+        .results-mode .closeButton,
+        .results-mode #centerLogo,
+        .results-mode #suggestions { display: none !important; }
+        .results-mode .recommendations { opacity: 1; transform: translateY(0); }
+
+        .backButton { /*back button after results are recieved*/
+            opacity: 0;
+            cursor: default;
+            padding: 12px 0 0 30px;
+            background: none;
+            border: none;
+            font-size: 20px;
+            text-decoration: underline;
+            position: relative; /* Essential for z-index to work */
+            z-index: 10;
+        }
+
+        .filterBar{ /*container for filtering options*/
+            max-width:700px;
+            margin: 10px;
+            display:none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .filterRow{
+            display:flex;
+            margin:15px 0px;
+        }
+
+        .filText{
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .recText{
+            font-weight: bold;
+            font-size: 22px;
+        }
+
+
+        .backButton.show {
+            opacity:1;
+            cursor:pointer;
+        } /*show back button*/
+
+        .filterBar.show {
+            display: flex;
+        } /*show back button*/
+
+        .filter{ /*filter styling*/
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-family: "Segoe UI";
+            font-size: 12px;
+            padding:3px 6px;
+            margin: 3px;
+        }
+
+        .excludeSeen{ /*styling for excluding movies logged in user has seen*/
+            align-items: center;
+            justify-content: center;
+            gap: 6px 12px;
+            font-size: 12px;
+            max-width: 700px;
+            padding-top:12px;
+        }
+
+        .excludeSeen label { /*styling for excluding movies logged in user has seen*/
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .genreCheckboxGroup { /*wrapper styling for genre checkboxes*/
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 6px 12px;
+            font-size: 12px;
+            max-width: 700px;
+        }
+
+        .genreCheckboxGroup label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            cursor: pointer;
+        }
+        
+    </style>
+</head>
+<!--progress bar for importing-->
+<div id="import-progress" style=" 
+    display:none;
+    position:fixed;
+    top:0; left:0;
+    width:100vw; height:100vh;
+    background:rgba(0,0,0,0.6);
+    backdrop-filter: blur(4px);
+    z-index:99999;
+    color:white;
+    font-family:'Segoe UI';
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+">
+    <div style="font-size:22px; margin-bottom:20px;" id="import-status-text">
+        Importing ratings…
+    </div>
+
+    <div style="
+        width:60%;
+        height:12px;
+        background:#444;
+        border-radius:6px;
+        overflow:hidden;
+    ">
+        <div id="import-progress-bar" style="
+            width:0%;
+            height:100%;
+            background:#ea3323;
+            transition:width 0.2s ease;
+        "></div>
+    </div>
+
+    <div id="import-count" style="margin-top:10px; font-size:14px; opacity:0.8;">
+        0 / 0
+    </div>
+</div>
+<body>
+    <div class="topstuff">
+        <button id="back" class="backButton">← Back to Search</button>
+        
+        <div id="login-box" class="login"> <!--all of the login stuff-->
+            <div id="logged-out-ui">
+                <div id="auth-toggle" class="authToggle"> <!--toggle buttons for login and create account menus-->
+                    <button id="login-tab" class="active loginElement toggle left">Login</button>
+                    <button id="create-tab" class="loginElement toggle right">Create Account</button>
+                </div>
+
+                <div id="login-ui" class="loggedOutWrapper"> <!--login menu-->
+                    <input class="loginElement" id="login-username" type="text" placeholder="Username">
+                    <input class="loginElement" id="login-password" type="password" placeholder="Password">
+                    <button class="loginElement" onclick="login()">Login</button>
+                </div>
+
+                <div id="create-account-ui" class="loggedOutWrapper" style="display:none;"> <!--create account menu-->
+                    <input class="loginElement" id="create-username" type="text" placeholder="Username">
+                    <input class="loginElement" id="create-password" type="password" placeholder="Password">
+                    <input class="loginElement" id="create-confirm" type="password" placeholder="Confirm Password">
+                    <button class="loginElement" onclick="createAccount()">Create Account</button>
+                </div>
+            </div>
+
+            <div id="logged-in-ui"> <!--logged in menu-->
+                <div>
+                    <span class="loggedInElement" id="display-username" style="font-weight: bold;"></span>
+                    <button class="loggedInElement" onclick="logout()" >Logout</button>
+                </div>
+                <div>
+                    <button class="loggedInElement" id="import-btn">Import Your Letterboxd ratings.csv</button>
+                    <input type="file" id="import-file" accept=".csv" style="display:none">
+                </div>
+                
+            </div>
+            
+            <div id="login-error" style="color:red; font-size: 12px; margin-top:5px;"></div>
+        </div>
+    </div>
+    
+    <div class="searchArea">
+        <div class="search_wrapper">
+
+            <img src="logowhite.png" class="centerLogo" id="cLogo">
+
+            <div class="posters" id="pRow"> <!--row of posters-->
+                <div class="poster"><button class="closeButton">&times;</button></div>
+                <div class="poster"><button class="closeButton">&times;</button></div>
+                <div class="poster"><button class="closeButton">&times;</button></div>
+                <div class="poster"><button class="closeButton">&times;</button></div>
+            </div>
+
+            
+
+            <form action="/search" method="get" class="searchBox" onsubmit="return false;"> <!--search bar-->
+                <input id="sInput" type="text" name="q" placeholder="Select up to 4 films you like...">
+                <button type="button" onclick="fetchRecommendations()"><img class="searchSymbol" src="mag.png"></button>
+            </form>
+
+            <ul id="sugg" class="suggestions hidden"></ul> <!--autofill movie suggestions-->
+            
+
+        </div>
+        <div id="fBar" class="filterBar"> <!--row of filtering options-->
+            <div class="filText">Filters:</div>
+            <div id="genreFilter" class="genreCheckboxGroup">
+                <label><input type="checkbox" value="Action"> Action</label>
+                <label><input type="checkbox" value="Adventure"> Adventure</label>
+                <label><input type="checkbox" value="Animation"> Animation</label>
+                <label><input type="checkbox" value="Comedy"> Comedy</label>
+                <label><input type="checkbox" value="Crime"> Crime</label>
+                <label><input type="checkbox" value="Documentary"> Documentary</label>
+                <label><input type="checkbox" value="Drama"> Drama</label>
+                <label><input type="checkbox" value="Fantasy"> Fantasy</label>
+                <label><input type="checkbox" value="History"> History</label>
+                <label><input type="checkbox" value="Horror"> Horror</label>
+                <label><input type="checkbox" value="Mystery"> Mystery</label>
+                <label><input type="checkbox" value="Romance"> Romance</label>
+                <label><input type="checkbox" value="Science Fiction"> Sci-fi</label>
+                <label><input type="checkbox" value="Thriller"> Thriller</label>
+                <label><input type="checkbox" value="Western"> Western</label>
+                
+            </div>
+            <div id="exclude-seen-wrapper" class="excludeSeen" style="display:none; font-weight: bold;">
+                    <label><input type="checkbox" id="exclude-seen">Exclude already seen</label>
+            </div>
+
+            <div class="filterRow">
+                <input class="filter" id="actorFilter" type="text" placeholder="Actor">
+                <input class="filter" id="directorFilter" type="text" placeholder="Director">
+                <select class="filter" id="decadeFilter">
+                    <option value="">Decade</option>
+                    <option value="1970">1970s</option>
+                    <option value="1980">1980s</option>
+                    <option value="1990">1990s</option>
+                    <option value="2000">2000s</option>
+                    <option value="2010">2010s</option>
+                    <option value="2020">2020s</option>
+                </select>
+
+                <select class="filter" id="lengthFilter">
+                    <option value="">Max Length</option>
+                    <option value="short">90min</option>
+                    <option value="medium-short">120min</option>
+                    <option value="medium-long">150min</option>
+                    <option value="long">180min</option>
+                </select>
+
+                <button class="filter" id="applyFiltersBtn">Apply</button>
+                
+            </div>
+            <div class="recText">Recommendations</div>
+        </div>
+        <div id="recommendations" class="recommendations"></div> <!--recommendations-->
+    </div>
+
+    <script>
+        const TMDB_API_KEY = "N/A"; //tmdb api key
+
+        const input = document.getElementById("sInput"); //search input
+        const posters = document.getElementById("pRow"); //row of posters
+        const searchArea = document.querySelector(".searchArea");
+        const searchBox = document.querySelector(".searchBox");
+        const suggestionsEl = document.getElementById("sugg");
+        const posterDivs = document.querySelectorAll(".poster");
+        const centerLogo = document.getElementById("cLogo");
+        const back = document.getElementById("back");
+        const filterBar = document.getElementById("fBar");
+
+        let posterSlots = [null, null, null, null]; //to track which posters are full
+
+        let seenMovies = new Set(); //for filtering out movies you have already seen
+        const loginTab = document.getElementById("login-tab");
+        const createTab = document.getElementById("create-tab");
+
+        const loginUI = document.getElementById("login-ui");
+        const createUI = document.getElementById("create-account-ui");
+
+        function showLogin() { //show login menu
+            loginTab.classList.add("active");
+            createTab.classList.remove("active");
+
+            loginUI.style.display = "flex";
+            createUI.style.display = "none";
+        }
+
+        function showCreate() { //show create account menu
+            createTab.classList.add("active");
+            loginTab.classList.remove("active");
+
+            loginUI.style.display = "none";
+            createUI.style.display = "flex";
+        }
+
+        async function createAccount() { //perform create account
+            const username = document.getElementById("create-username").value.trim();
+            const password = document.getElementById("create-password").value;
+            const confirm = document.getElementById("create-confirm").value;
+
+            const errorBox = document.getElementById("login-error");
+
+            //validation
+            if (password !== confirm) {
+                errorBox.textContent = "Passwords do not match";
+                return;
+            }
+
+            if (password.length < 6) {
+                errorBox.textContent = "Password must be at least 6 characters";
+                return;
+            }
+
+            try { //try create
+                const res = await fetch("http://127.0.0.1:8000/create-account", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await res.json();
+
+                if (!res.ok) { //error check
+                    errorBox.textContent = data.detail;
+                    return;
+                }
+
+                //store token and switch UI
+                localStorage.setItem("cine_jwt", data.token);
+                localStorage.setItem("cine_user", username);
+
+                document.getElementById("display-username").textContent = data.username;
+
+                await loadSeenMovies();
+                document.getElementById("logged-out-ui").style.display = "none";
+                document.getElementById("logged-in-ui").style.display = "block";
+                ;
+                errorBox.textContent = "";
+                setupImportButton();
+
+            } catch (err) { //error check
+                errorBox.textContent = "Server error — try again";
+            }
+            updateUI();
+        }
+
+        loginTab.onclick = showLogin; //show login menu on click
+        createTab.onclick = showCreate; //show create menu on click
+
+        //default state
+        showLogin();
+        function updateSearchBoxState() { //for handling the search button when poster is full
+            const anyFilled = posterSlots.some(slot => slot !== null);
+
+            if (!anyFilled) {
+                searchBox.classList.add("empty");
+            } else {
+                searchBox.classList.remove("empty");
+            }
+        }
+
+        input.addEventListener("focus", () => { //show posters and shift search bar when search bar is clicked
+            posters.classList.add("show");
+            searchArea.classList.add("shifted");
+            centerLogo.classList.add("hidden"); // hide logo
+        });
+
+        input.addEventListener("blur", () => { //if any poster is filled, keep the poster up when you click out of the search bar
+            setTimeout(() => {
+                const anyFilled = posterSlots.some(slot => slot !== null);
+
+                if (!anyFilled) {
+                    posters.classList.remove("show");
+                    searchArea.classList.remove("shifted");
+                    centerLogo.classList.remove("hidden"); // show logo
+                }
+            }, 150);
+        });
+
+        back.addEventListener("click", () => { //returning to movie selection if you click the back button after getting results
+
+            searchArea.classList.remove("results-mode"); //leave results-mode
+
+            document.getElementById("recommendations").innerHTML = ""; //clear recs
+
+            searchArea.classList.remove("shifted"); //move area back down
+
+            const anyFilled = posterSlots.some(slot => slot !== null); //bring back logo if there are no posters (shouldn't happen)
+            if (!anyFilled) {
+                centerLogo.classList.remove("hidden");
+            }
+
+            filterBar.classList.remove("show"); //hide filters
+
+            back.classList.remove("show"); //hide back button
+
+            input.value = ""; //bring back search bar
+            input.focus();
+        });
+
+        let debounceTimer; //debounce helper
+        function debounce(fn, delay = 300) {
+            return (...args) => {
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(() => fn(...args), delay);
+            };
+        }
+
+        async function fetchMovies(query) { //fetch movies from TMDB API
+            if (document.querySelector(".searchArea").classList.contains("results-mode")) {
+                hideSuggestions();
+                return;
+            }
+
+            
+            if (!query.trim()) {
+                hideSuggestions();
+                return;
+            }
+
+            try {
+                const url = `https://api.themoviedb.org/3/search/movie?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(query)}`;
+                const res = await fetch(url);
+                if (!res.ok) throw new Error("TMDB request failed");
+                const data = await res.json();
+                showSuggestions(data.results || []);
+            } catch (err) {
+                console.error(err);
+                hideSuggestions();
+            }
+        }
+
+        function makeLetterboxdSlug(title, year, needsYear) { //make letterboxd link slug
+            let slug = title
+                .toLowerCase()
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "")   // remove accents
+                .replace(/[^a-z0-9\s-]/g, "")      // remove punctuation
+                .trim()
+                .replace(/\s+/g, "-");
+
+            if (needsYear) slug += "-" + year;
+
+            return slug;
+        }
+
+        async function titleIsAmbiguous(title) { //helper function for creatting slug for letterboxd link
+            const url = `https://api.themoviedb.org/3/search/movie?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(title)}`;
+            const res = await fetch(url);
+            const data = await res.json();
+
+            //count movies with EXACT same title
+            const matches = data.results.filter(m => m.title.toLowerCase() === title.toLowerCase());
+
+            return matches.length > 1;
+        }
+
+        async function fetchDirector(movieId) { //fetch director for passed movie from TMDB API
+            const url = `https://api.themoviedb.org/3/movie/${movieId}/credits?api_key=${TMDB_API_KEY}`;
+            const res = await fetch(url);
+            const data = await res.json();
+
+            const director = data.crew.find(person => person.job === "Director");
+            return director ? director.name : "Unknown";
+        }
+
+        async function fetchCast(movieId) { //fetch top 3 cast members for passed movie from TMDB API
+            const url = `https://api.themoviedb.org/3/movie/${movieId}/credits?api_key=${TMDB_API_KEY}`;
+            const res = await fetch(url);
+            const data = await res.json();
+
+            return data.cast.slice(0, 3).map(actor => actor.name).join(", ");
+        }
+
+        async function fetchGenres(movieId) { //fetch genres for passed movie from TMDB API
+            const url = `https://api.themoviedb.org/3/movie/${movieId}?api_key=${TMDB_API_KEY}`;
+            const res = await fetch(url);
+            const data = await res.json();
+
+            return data.genres.map(g => g.name).join(", ");
+        }
+
+
+        async function showSuggestions(results) { //get autofill suggestions with fetched data
+            suggestionsEl.innerHTML = "";
+
+            const selectedIds = posterSlots //exclude movies that are already selected
+                .filter(slot => slot !== null)
+                .map(slot => slot.id);
+
+            results = results.filter(movie => !selectedIds.includes(movie.id));
+
+            const filtered = results.filter(m => m.poster_path).slice(0, 8); //show first 8 suggestions
+            if (filtered.length === 0) {
+                hideSuggestions();
+                return;
+            }
+
+            for (const movie of filtered) {
+                const li = document.createElement("li");
+                li.classList.add("suggestion-item");
+
+                //fetch details for each movie (poster, date, director, top 3 cast members, genres)
+                const year = movie.release_date ? movie.release_date.slice(0, 4) : "";
+                const posterUrl = `https://image.tmdb.org/t/p/w92${movie.poster_path}`;
+                const director = await fetchDirector(movie.id);
+                const cast = await fetchCast(movie.id);
+                const genres = await fetchGenres(movie.id);
+
+                //html for suggestions
+                li.innerHTML = `
+                    <img src="${posterUrl}" class="posterThumb">
+
+                    <div class="infoLeft">
+                        <span class="title"><strong>${movie.title}</strong> (${year})</span>
+                        <span class="director">Director: ${director}</span>
+                    </div>
+
+                    <div class="infoRight">
+                        <span class="stars">Stars: ${cast}</span>
+                        <span class="genre">Genre: ${genres}</span>
+                    </div>
+                `;
+
+                li.addEventListener("click", () => selectMovie(movie));
+                suggestionsEl.appendChild(li);
+            }
+
+            suggestionsEl.classList.remove("hidden"); //unhide suggestions
+            searchBox.classList.add("suggestionsOpen");
+        }
+
+        function hideSuggestions() { //self explanatory
+            suggestionsEl.classList.add("hidden");
+            suggestionsEl.innerHTML = "";
+            searchBox.classList.remove("suggestionsOpen");
+        }
+
+        function selectMovie(movie) { //user picks movie from suggestions
+            const posterUrl = `https://image.tmdb.org/t/p/w500${movie.poster_path}`; // get poster from suggestion
+
+            const index = posterSlots.indexOf(null); //checks for rightmost open slot
+            if (index === -1) {
+                return;
+            }
+
+            posterSlots[index] = {id: movie.id, title: movie.title, poster: posterUrl}; //save movie data to slot
+            posterDivs[index].style.backgroundImage = `url(${posterUrl})`;
+            posterDivs[index].classList.add("filled"); //add filled styling to selected poster slot
+            posterDivs[index].style.opacity = "1";
+            posterDivs[index].style.pointerEvents = "auto";
+            posters.classList.add("show");
+            searchArea.classList.add("shifted");
+
+            posters.classList.add("show"); //redundancy to fix disapearing poster bug
+            searchArea.classList.add("shifted");
+            centerLogo.classList.add("hidden");
+
+            input.value = ""; //empty searchbar and hide suggestions
+            hideSuggestions();
+
+            input.blur();
+            updateSearchBoxState();
+        }
+
+        function removePoster(index) {
+            posterSlots.splice(index, 1); //remove poster
+
+            posterSlots.push(null); //add null to keep size 4
+
+            posterDivs.forEach(poster => { //clear posters
+                poster.style.backgroundImage = "";
+                poster.classList.remove("filled");
+            });
+            console.log("posterSlots:", posterSlots);
+            console.log("index removed:", index);
+
+            posterSlots.forEach((slot, i) => { //update and refill necessary posters
+                if (slot !== null) {
+                    posterDivs[i].style.backgroundImage = `url(${slot.poster})`;
+                    posterDivs[i].classList.add("filled");
+                }
+            });
+
+            const anyFilled = posterSlots.some(slot => slot !== null); //return logo if all empty
+
+            if (!anyFilled) {
+                posters.classList.remove("show");
+                searchArea.classList.remove("shifted");
+                centerLogo.classList.remove("hidden");
+            }
+            updateSearchBoxState();
+        }
+
+        //debounce input event
+        input.addEventListener("input", debounce(() => {
+            fetchMovies(input.value);
+        }, 300));
+
+        posterDivs.forEach((poster, i) => {
+                const btn = poster.querySelector(".closeButton");
+                btn.addEventListener("click", (e) => {
+                    e.stopPropagation(); // prevent triggering poster click
+                    removePoster(i);
+                });
+            });
+
+        let lastRecommendations = []; // global
+
+        async function fetchRecommendations() { //get reccomendations from database
+            const ids = posterSlots.filter(s => s !== null).map(s => s.id);
+            if (ids.length === 0) return;
+
+            const token = localStorage.getItem("cine_jwt");
+            const excludeSeen = document.getElementById("exclude-seen")?.checked || false;
+
+            const url = `http://127.0.0.1:8000/recommend?ids=${ids.join(",")}&exclude_seen=${excludeSeen}`;
+            
+            // create the headers object conditionally
+            const headers = {};
+            if (token && token !== "undefined") {
+                headers["Authorization"] = `Bearer ${token}`;
+            }
+
+            try {
+                const res = await fetch(url, { headers });
+                if (!res.ok) {
+                    console.error("Server Error:", res.status);
+                    return;
+                }
+                const recs = await res.json();
+                
+                lastRecommendations = recs;
+                displayRecommendations(recs);
+            } catch (err) {
+                console.error("Fetch failed:", err);
+            }
+        }
+
+        async function displayRecommendations(recs) {
+            const container = document.getElementById("recommendations");
+            const excludeSeen = document.getElementById("exclude-seen")?.checked || false;
+            searchArea.classList.add("results-mode");
+            
+            //show back button in top left
+            back.classList.add("show");
+            filterBar.classList.add("show");
+            suggestionsEl.classList.add("hidden");
+            container.innerHTML = "";
+
+            let rank = 1;
+
+            // timeout wrapper so TMDB never freezes the loop
+            function fetchWithTimeout(url, timeout = 4000) {
+                return Promise.race([
+                    fetch(url),
+                    new Promise((_, reject) =>
+                        setTimeout(() => reject(new Error("timeout")), timeout)
+                    )
+                ]);
+            }
+
+            //loop through backend recommendations
+            for (const movie of recs) {
+                const tmdbId = movie.tmdb_id;
+
+                
+                let details;
+                try {
+                    const res = await fetchWithTimeout( //get tmdb data
+                        `https://api.themoviedb.org/3/movie/${tmdbId}?api_key=${TMDB_API_KEY}&append_to_response=credits`
+                    );
+
+                    if (!res.ok) continue;
+                    details = await res.json();
+
+                    if (!details || !details.title || !details.credits) continue; //skip movies missing details that may break search
+
+                } catch (err) { //skip timeouts
+                    continue;
+                }
+
+                //apply filters
+                const actorFilter = document.getElementById("actorFilter").value.toLowerCase();
+                const directorFilter = document.getElementById("directorFilter").value.toLowerCase();
+                const selectedGenres = Array.from(document.querySelectorAll('#genreFilter input:checked')).map(cb => cb.value);
+                const decadeFilter = document.getElementById("decadeFilter").value;
+                const lengthFilter = document.getElementById("lengthFilter").value;
+
+                if (actorFilter) {//actor filter
+                    const castNames = details.credits.cast.map(a => a.name.toLowerCase());
+                    if (!castNames.includes(actorFilter)) continue;
+                }
+                
+                if (directorFilter) {//director filter
+                    const director = details.credits.crew.find(p => p.job === "Director")?.name.toLowerCase() || "";
+                    if (director !== directorFilter) continue;
+                }
+
+                if (selectedGenres.length > 0) {//genre filter
+                    const movieGenres = details.genres.map(g => g.name);
+                    const matches = selectedGenres.every(g => movieGenres.includes(g));
+                    if (!matches) continue;
+                }
+
+                if (decadeFilter) {//decade filter
+                    if (!details.release_date) continue;
+                    const year = parseInt(details.release_date.slice(0, 4));
+                    const start = parseInt(decadeFilter);
+                    if (year < start || year >= start + 10) continue;
+                }
+
+                const runtime = details.runtime; //length filter
+                if (lengthFilter === "short" && runtime >= 90) continue;
+                if (lengthFilter === "medium-short" && runtime >= 120) continue;
+                if (lengthFilter === "medium-long" && runtime >= 150) continue;
+                if (lengthFilter === "long" && runtime >= 180) continue;
+
+                //if seen filter
+                if (excludeSeen && seenMovies.has(tmdbId)) continue;
+
+                //build DOM for valid movie
+                const posterUrl = `https://image.tmdb.org/t/p/w185${details.poster_path}`;
+                const title = details.title;
+                const year = details.release_date ? details.release_date.slice(0, 4) : "Unknown";
+                const needsYear = await titleIsAmbiguous(title);
+                const slug = makeLetterboxdSlug(title, year, needsYear);
+                const letterboxdUrl = `https://letterboxd.com/film/${slug}/`;
+                const director = details.credits.crew.find(p => p.job === "Director")?.name || "Unknown";
+                const cast = details.credits.cast.slice(0, 3).map(a => a.name).join(", ");
+                const genres = details.genres.map(g => g.name).join(", ");
+
+                const item = document.createElement("div");
+                item.style.display = "flex";
+                item.style.alignItems = "center";
+                item.style.gap = "15px";
+                item.style.marginBottom = "20px";
+                item.style.padding = "10px";
+                item.style.border = "1px solid #ccc";
+                item.style.borderRadius = "8px";
+                item.style.background = "#fafafa";
+                item.style.boxShadow = "0 2px 6px rgba(0,0,0,0.15)";
+
+                item.innerHTML = `
+                    <div>${rank}</div>
+                    <img src="${posterUrl}" style="width:80px; border-radius:6px; flex-shrink:0;">
+                    <div style="display:flex; flex-direction:column;">
+                        <a href="${letterboxdUrl}" target="_blank" style="font-size:18px; font-weight:bold; color:#000; text-decoration:none;">${title} (${year})</a>
+                        <span style="font-size:14px; color:#444;">Director: ${director}</span>
+                        <span style="font-size:14px; color:#444;">Stars: ${cast}</span>
+                        <span style="font-size:14px; color:#444;">Genres: ${genres}</span>
+                        <span style="font-size:13px; color:#666;">Tally: ${movie.tally ?? 'N/A'}</span>
+                    </div>
+                `;
+
+                container.appendChild(item);
+                rank++;
+
+                if (rank > 10) break; //show top 10
+            }
+
+            
+        }
+
+        document.getElementById("applyFiltersBtn").addEventListener("click", () => { //apply filters
+            displayRecommendations(lastRecommendations);
+        });
+
+        updateUI(); //run this on page load to check existing session
+
+        function updateUI() {
+            const token = localStorage.getItem("cine_jwt");
+            const username = localStorage.getItem("cine_user");
+            const loggedOutUI = document.getElementById("logged-out-ui");
+            const loggedInUI = document.getElementById("logged-in-ui");
+            const displayUser = document.getElementById("display-username");
+            const excludeSeenWrapper = document.getElementById("exclude-seen-wrapper");
+
+            if (token && token !== "undefined") {
+                loggedInUI.style.display = "block";
+                loggedOutUI.style.display = "none";
+                excludeSeenWrapper.style.display = "flex";
+                displayUser.textContent = "Username: " + username;
+                setupImportButton();
+                
+            } else {
+                loggedInUI.style.display = "none";
+                loggedOutUI.style.display = "block";
+                excludeSeenWrapper.style.display = "none";
+                document.getElementById("exclude-seen").checked = false;
+            }
+
+        }
+
+        async function loadSeenMovies() {
+            const token = localStorage.getItem("cine_jwt");
+            if (!token) return;
+
+            const res = await fetch("http://127.0.0.1:8000/seen", {
+                headers: { "Authorization": `Bearer ${token}` }
+            });
+
+            if (res.ok) {
+                const data = await res.json();
+                seenMovies = new Set(data); // store tmdb_ids
+            }
+        }
+
+        async function login() { //handle logging in with database
+            const username = document.getElementById("login-username").value.trim();
+            const password = document.getElementById("login-password").value.trim();
+            const errorBox = document.getElementById("login-error");
+
+            try {
+                const res = await fetch("http://localhost:8000/login", { //try loggin
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await res.json(); //error catch
+                if (!res.ok) {
+                    errorBox.textContent = data.detail || "Login failed";
+                    return;
+                }
+
+                localStorage.setItem("cine_jwt", data.token);
+                localStorage.setItem("cine_user", username);
+                errorBox.textContent = "";
+
+                await loadSeenMovies(); //find seen movies for exclude seen feature
+                updateUI(); // toggle ui
+            } catch (err) { //error catch
+                errorBox.textContent = "Network error";
+            }
+        }
+
+        function logout() { //logout
+            localStorage.removeItem("cine_jwt");
+            localStorage.removeItem("cine_user");
+            updateUI();
+        }
+
+        function setupImportButton() {
+            const importBtn = document.getElementById("import-btn");
+            const fileInput = document.getElementById("import-file");
+
+            importBtn.onclick = () => fileInput.click();
+
+            fileInput.onchange = async () => {
+                const file = fileInput.files[0];
+                if (!file) return;
+
+                //read CSV locally to count rows
+                const text = await file.text();
+                const lines = text.split("\n").filter(l => l.trim().length > 0);
+
+                const totalRows = lines.length - 1;
+                let processed = 0;
+
+                //show progress UI
+                const overlay = document.getElementById("import-progress");
+                const bar = document.getElementById("import-progress-bar");
+                const countText = document.getElementById("import-count");
+                const statusText = document.getElementById("import-status-text");
+
+                overlay.style.display = "flex";
+                bar.style.width = "0%";
+                countText.textContent = `0 / ${totalRows}`;
+
+                //start backend upload
+                const formData = new FormData();
+                formData.append("file", file);
+
+                const token = localStorage.getItem("cine_jwt");
+
+                //simulated progress while backend works
+                const interval = setInterval(() => {
+                    processed = Math.min(processed + 1, totalRows);
+                    const pct = Math.floor((processed / totalRows) * 100);
+                    bar.style.width = pct + "%";
+                    countText.textContent = `${processed} / ${totalRows}`;
+                }, 300);
+
+                const res = await fetch("http://127.0.0.1:8000/upload-letterboxd", {
+                    method: "POST",
+                    headers: { Authorization: `Bearer ${token}` },
+                    body: formData
+                });
+
+                clearInterval(interval);
+
+                if (res.ok) {
+                    loadSeenMovies();
+                    bar.style.width = "100%";
+                    countText.textContent = `${totalRows} / ${totalRows}`;
+                    statusText.textContent = "Import complete!";
+                    setTimeout(() => overlay.style.display = "none", 1200);
+                } else {
+                    statusText.textContent = "Import failed";
+                    bar.style.background = "red";
+                    setTimeout(() => overlay.style.display = "none", 1500);
+                }
+            };
+        }
+        if (localStorage.getItem("cine_jwt")) {
+            loadSeenMovies();
+        } 
+        updateSearchBoxState();
+    </script>
+</body>
