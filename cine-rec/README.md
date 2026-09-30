@@ -1,5 +1,5 @@
 # cine-rec
-**_cine-rec_ is a movie recommendation platform**, initially designed with a group as _PopcornPix_ in my Software Engineering I class in Fall 2024. After that group dissolved, and a brief time away, I returned to the project as a solo endeavor for my Human Computer Interaction class in Spring 2026 under its new title. Little of the initial design remained, but the principle was the same: create a piece of software to give people accurate movie recommendations to their taste.
+**_cine-rec_ is a movie recommendation platform**, initially designed with a group as _PopcornPix_ in my Software Engineering I class in Fall 2024. After that group dissolved, and a brief time away, I returned to the project as a solo endeavor for my Human Computer Interaction class in Spring 2026 under its new title. Little of the initial design remained, but the principle was the same: create a piece of software to **give people accurate movie recommendations to their taste**.
 
 <img width="900" alt="Screenshot 2026-04-21 212827" src="https://github.com/user-attachments/assets/6b94e626-1912-49d5-9077-757b9b2e65de" />
 
