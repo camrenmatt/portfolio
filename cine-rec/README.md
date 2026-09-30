@@ -2,7 +2,7 @@
 # cine-rec
 **_cine-rec_ is a movie recommendation platform**, initially designed with a group as _PopcornPix_ in my Software Engineering I class in Fall 2024. After that group dissolved, and a brief time away, I returned to the project as a solo endeavor for my Human Computer Interaction class in Spring 2026 under its new title. Little of the initial design remained, but the principle was the same: create a piece of software to **give people accurate movie recommendations to their taste**.
 
-<img align="center" width="800" height="300" alt="logowhite" src="https://github.com/user-attachments/assets/196b3599-6e31-4be1-b837-beb5b69621da" />
+<p align="center"><img width="800" height="300" alt="logowhite" src="https://github.com/user-attachments/assets/196b3599-6e31-4be1-b837-beb5b69621da" /></p>
 
 # Background
 I have always found that streaming services made it incredibly difficult to find a film to watch. They give you an overwhelming quantity of choices, categorize them vaguely, and give you little insight into why they are recommended to you in the first place. **With _cine-rec_, you will be able to select up to four movies that you like, and receive recommendations based on other users who like the same films. These recommendations will then be able to be filtered based on genre, length, release decade, director, or actor.**
