@@ -29,7 +29,9 @@ Upon clicking on the bar, four empty poster slots will appear, to be filled by y
 <p align="center"><img width="500" alt="image" src="https://github.com/user-attachments/assets/daa181c9-db49-4424-8b5c-2ee2ea22cb84" />
 <img width="500" alt="Screenshot 2026-04-21 212920" src="https://github.com/user-attachments/assets/b5ef7762-b890-4cea-90cc-8728475b4019" /></p>
 
-With four films selected: <img width="500" alt="image" src="https://github.com/user-attachments/assets/cea9ae64-e426-4ed6-b733-376f00a17843" />
+With four films selected:
+
+<p align="center"><img width="500" alt="image" src="https://github.com/user-attachments/assets/cea9ae64-e426-4ed6-b733-376f00a17843" /></p>
 
 
 <img width="1122" height="269" alt="Screenshot 2026-04-21 213211" src="https://github.com/user-attachments/assets/7cab31cc-10f1-402b-b97a-b327ae32b695" />
